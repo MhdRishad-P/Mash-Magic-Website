@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+
+
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+/* index.css */
+
+.background-gradient {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(270deg, #ffffff 0%, #008080 100%);
+  background-attachment: fixed;
+  font-family: 'Poppins', sans-serif;
+}

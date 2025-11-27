@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
+import Logo from  "../assets/logo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,13 +20,12 @@ export default function Navbar() {
     );
 
     let lastScroll = 0;
-
     ScrollTrigger.create({
       start: 0,
       onUpdate: (self) => {
         const current = self.scroll();
         if (current > lastScroll && current > 70) {
-          gsap.to(el, { y: -90, duration: 0.4, ease: "power3.out" });
+          gsap.to(el, { y: -100, duration: 0.4, ease: "power3.out" });
         } else {
           gsap.to(el, { y: 0, duration: 0.4, ease: "power3.out" });
         }
@@ -35,34 +35,60 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center fixed top-5 z-50">
+    <div className="w-full flex justify-center fixed top-4 z-[9999] p-2"> 
       <nav
         ref={navRef}
         className="
-          px-6 py-2 rounded-full flex items-center gap-10
-          bg-white/20 backdrop-blur-xl border border-white/30
-          shadow-[0_4px_20px_rgba(0,0,0,0.12)]
-          transition-all duration-300
-          scale-95
+          px-2 sm:px-8 py-1 rounded-full flex items-center justify-between
+         border border-white
+          shadow-[0_8px_30px_rgba(0,0,0,0.1)]
+          transition-all duration-300 transform scale-100
+          w-11/12 md:w-auto
         "
+        style={{ fontFamily: "Poppins" }}
       >
-        {/* LOGO */}
-        <h1 className="text-sm font-semibold tracking-wide text-black font-[Poppins]">
-          MASH MAGIC
-        </h1>
+
+        {/* LOGO IMAGE (Text Removed) */}
+        <Link to="/" className="flex items-center">
+          <img 
+            src={Logo}        // change to your actual logo path
+            alt="Logo"
+            className="w-15 h-12 object-contain"
+          />
+        </Link>
 
         {/* DESKTOP MENU */}
-        <ul className="hidden md:flex gap-6 text-gray-800">
-          <SmallMenu label={<Link to="/">HOME</Link>} />
-          <SmallMenu label={<Link to="/about">ABOUT US</Link>} />
-          <SmallMenu label={<Link to="/whyus">WHY US</Link>} />
-          <SmallMenu label={<Link to="/programs">PROGRAMS</Link>} />
-            <SmallMenu label={<Link to="/contact">CONTACT</Link>} />
+        <ul className="hidden md:flex gap-8 items-center ml-10">
+          <MenuLink to="/" label="Home" />
+          <MenuLink to="/about" label="About Us" />
+          <MenuLink to="/whyus" label="Why Us" />
+          <MenuLink to="/programs" label="Programs" />
+
+          <Link 
+            to="/contact" 
+            className="
+              bg-teal-600 hover:bg-teal-700 text-white
+              font-semibold text-sm tracking-wider
+              py-2.5 px-6 rounded-full transition-all duration-300 
+              shadow-lg hover:shadow-xl ml-4
+            "
+          >
+            CONTACT
+          </Link>
         </ul>
 
         {/* MOBILE TOGGLE */}
-        <div className="md:hidden cursor-pointer" onClick={() => setOpen(!open)}>
-          <span className="text-2xl text-[#008081]">☰</span>
+        <div 
+          className="md:hidden cursor-pointer p-2 rounded-full hover:bg-white/20 transition-colors" 
+          onClick={() => setOpen(!open)}
+        >
+          <svg className="w-6 h-6 text-teal-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {open ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
         </div>
       </nav>
 
@@ -70,17 +96,17 @@ export default function Navbar() {
       {open && (
         <div
           className="
-            absolute top-20 w-48 p-4 rounded-2xl
-            bg-white/30 backdrop-blur-xl border border-white/40
-            shadow-lg md:hidden
+            absolute top-full mt-2 w-11/12 sm:w-64 p-4 rounded-xl
+            bg-white backdrop-blur-md border border-gray-100/30
+            shadow-2xl md:hidden 
           "
         >
-          <ul className="flex flex-col gap-3 text-gray-900 text-sm font-[Poppins]">
-            <li><Link to="/" onClick={() => setOpen(false)}>HOME</Link></li>
-            <li><Link to="/about" onClick={() => setOpen(false)}>ABOUT US</Link></li>
-            <li>WHY US</li>
-            <li>PROGRAMS</li>
-            <li>CONTACT</li>
+          <ul className="flex flex-col gap-3 text-black text-base font-medium" style={{ fontFamily: "Poppins" }}>
+            <MobileLink to="/" label="Home" setOpen={setOpen} />
+            <MobileLink to="/about" label="About Us" setOpen={setOpen} />
+            <MobileLink to="/whyus" label="Why Us" setOpen={setOpen} />
+            <MobileLink to="/programs" label="Programs" setOpen={setOpen} />
+            <MobileLink to="/contact" label="Contact" setOpen={setOpen} />
           </ul>
         </div>
       )}
@@ -88,7 +114,8 @@ export default function Navbar() {
   );
 }
 
-function SmallMenu({ label }) {
+/* DESKTOP MENU LINK */
+function MenuLink({ to, label }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -96,19 +123,19 @@ function SmallMenu({ label }) {
 
     el.addEventListener("mouseenter", () => {
       gsap.to(el, {
-        y: -3,
-        duration: 0.2,
+        scale: 1.05,
+        duration: 0.3,
         ease: "power2.out",
-        color: "#008081",
+        color: "#6366F1",
       });
     });
 
     el.addEventListener("mouseleave", () => {
       gsap.to(el, {
-        y: 0,
-        duration: 0.2,
+        scale: 1,
+        duration: 0.3,
         ease: "power2.out",
-        color: "#444",
+        color: "#000000",
       });
     });
   }, []);
@@ -116,9 +143,27 @@ function SmallMenu({ label }) {
   return (
     <li
       ref={ref}
-      className="cursor-pointer text-sm italic text-gray-700 font-[Poppins] tracking-wide"
+      className="
+        cursor-pointer text-sm font-medium text-black 
+        tracking-wider hover:text-teal-500 transition-colors duration-200
+      "
     >
-      {label}
+      <Link to={to}>{label}</Link>
+    </li>
+  );
+}
+
+/* MOBILE MENU LINK */
+function MobileLink({ to, label, setOpen }) {
+  return (
+    <li className="py-2 px-3 rounded-lg hover:bg-white transition-colors duration-200">
+      <Link
+        to={to}
+        onClick={() => setOpen(false)}
+        className="block text-sm font-medium text-black hover:text-teal-400 transition-colors"
+      >
+        {label}
+      </Link>
     </li>
   );
 }
